@@ -19,9 +19,14 @@ jQuery(document).ready(function() {
 
   socket.on('newMessage',function(message){//received from server
     var formattedTime=moment(message.createdAt).format('h:mm a');
-    var li=jQuery('<li></li>');
-    li.text(`From:${message.From} ${formattedTime}: ${message.Text}`);
-    jQuery('#messages').append(li);
+    var template=jQuery('#message-template').html();
+    var html=Mustache.render(template,{
+      Text:message.Text,
+      From:message.From,
+      createdAt:formattedTime
+    });
+    jQuery('#messages').append(html);
+    scrollToBottom();
   });
 
   var location=jQuery('#location-button');
@@ -46,15 +51,32 @@ jQuery(document).ready(function() {
 
   socket.on('newLocationMessage',function(message){
   var formattedTime=moment(message.createdAt).format('h:mm a');
-  var li=jQuery("<li></li>");
-  var a=jQuery('<a target="_blank">My current location</a>');
-  li.text(`From:${message.From} ${formattedTime}:`);
-  a.attr('href',message.Url);
-  li.append(a);
-  jQuery('#messages').append(li);
+  var template=jQuery('#location-message-template').html();
+  var html=Mustache.render(template,{
+    Url:message.Url,
+    From:message.From,
+    createdAt:formattedTime
   });
-
+  jQuery('#messages').append(html);
+  scrollToBottom();
 });
+
+function scrollToBottom(){//we scroll for new messages if the user is near bottom..if he is viewing old messages we dont scroll
+  //selectors
+  var messages=jQuery('#messages');
+  var newMessage=messages.children('li:last-child');
+  //heights
+  var clientHeight=messages.prop('clientHeight');
+  var scrollTop=messages.prop('scrollTop');
+  var scrollHeight=messages.prop('scrollHeight');
+  var newMessageHeight=newMessage.innerHeight();
+  var prevMessageHeight=newMessage.prev().innerHeight();
+
+  if(clientHeight+scrollTop+newMessageHeight+prevMessageHeight>=scrollHeight){
+    messages.scrollTop(scrollHeight);
+  }
+}
+});//closing jquery ready
 
 
 socket.on('disconnect',function(){

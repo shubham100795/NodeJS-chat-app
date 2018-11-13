@@ -7,6 +7,7 @@
     <script src="/js/jquery.min.js"></script>
     <script src="/js/script.js"></script>
     <script src="/js/moment.js"></script>
+    <script src="/js/mustache.js"></script>
     <link rel="stylesheet" href="/css/style.css" />
   </head>
 
@@ -21,9 +22,37 @@
 
       <ol id="messages" class="chat__messages"></ol>
 
+      <script id="message-template" type="text/template"><!--template for normal messages-->
+        <li id="message">
+          <div class="message__title">
+            <h4>{{From}}</h4>
+            <span>{{createdAt}}</span>
+          </div>
+
+          <div class="message__body">
+            <p>{{Text}}</p>
+          </div>
+        </li>
+      </script>
+
+      <script id="location-message-template" type="text/template"><!--template for location messages-->
+        <li id="message">
+          <div class="message__title">
+            <h4>{{From}}</h4>
+            <span>{{createdAt}}</span>
+          </div>
+
+          <div class="message__body">
+            <p>
+            <a href={{Url}} target="_blank">My current location</a>
+            </p>
+          </div>
+        </li>
+      </script>
+
     <div class="chat__footer">
       <form id="message-form">
-        <input type="text" name="message" placeholder="Message" autofocus autocomplete="false"/><br>
+        <input type="text" name="message" placeholder="Message" autofocus autocomplete="false" required/><br>
         <button>Send</button>
       </form>
       <br>

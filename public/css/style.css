@@ -9,6 +9,7 @@
 
 ul, li {
   list-style-position: inside;
+  margin: 10px 0;
 }
 
 h3 {
