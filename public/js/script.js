@@ -16,7 +16,7 @@ var socket=io();//when server down we see request being made for io connection i
   });
 
   jQuery(document).ready(function() {
-    
+
   jQuery('#message-form').on('submit',function(e){
     e.preventDefault();
     socket.emit('createMessage',{
@@ -26,6 +26,14 @@ var socket=io();//when server down we see request being made for io connection i
       jQuery('[name=message]').val('')//clearing text box
     });
     return false;
+  });
+
+  socket.on('updateUserList',function(users){
+    var ol=jQuery('<ol></ol>');
+    users.forEach(function(user){
+      ol.append(jQuery('<li></li>').text(user));
+    });
+    jQuery('#users').html(ol);
   });
 
   socket.on('newMessage',function(message){//received from server
