@@ -1,11 +1,22 @@
 var socket=io();//when server down we see request being made for io connection in every quater of second
-socket.on('connect',function(){
-  console.log('New connection to server made');
-  //socket.emit('newEmailFromClient',{From:'Client',To:'Server'});//create email only when server connected
-});
 
-jQuery(document).ready(function() {
+  socket.on('connect',function(){
+    var params=jQuery.deparam(window.location.search);
+    console.log('New connection to server made');
+    socket.emit('join',params,function(err){
+      if(err)
+      {
+        alert(err);
+        window.location.href='/';
+      }
+      else {
+        console.log('No error');
+      }
+    });
+  });
 
+  jQuery(document).ready(function() {
+    
   jQuery('#message-form').on('submit',function(e){
     e.preventDefault();
     socket.emit('createMessage',{
