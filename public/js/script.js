@@ -20,7 +20,6 @@ var socket=io();//when server down we see request being made for io connection i
   jQuery('#message-form').on('submit',function(e){
     e.preventDefault();
     socket.emit('createMessage',{
-      From:'User',
       Text:jQuery('[name=message]').val()
     },function(){
       jQuery('[name=message]').val('')//clearing text box
@@ -57,13 +56,13 @@ var socket=io();//when server down we see request being made for io connection i
     location.attr('disabled','disabled').text('Sending location...');
 
       navigator.geolocation.getCurrentPosition(function(position){
-        location.removeAttr('disabled').text('Send location');
+        location.removeAttr('disabled').text('Send current location');
         socket.emit('sendLocation',{
           latitude:position.coords.latitude,
           longitude:position.coords.longitude
         });
       },function(){
-        location.removeAttr('disabled').text('Send location');
+        location.removeAttr('disabled').text('Send current location');
         return alert('Unable to fetch location');
       });
   });

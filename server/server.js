@@ -32,17 +32,25 @@ io.on('connection',(socket)=>{//socket is an object for each indivisual user
   });
 
   socket.on('createMessage',(message,callback)=>{
-    console.log('User created new message',message);
-    io.emit('newMessage',{From:message.From,Text:message.Text,createdAt:moment().valueOf()});//emit sends to all users
+    var user=users.getUser(socket.id);
+    if(user&&message.Text!='')
+    {
+      io.to(user.room).emit('newMessage',{From:user.name,Text:message.Text,createdAt:moment().valueOf()});//emit sends to all users
+    }
+
     callback();
   });
 
   socket.on('sendLocation',(position)=>{
-    io.emit('newLocationMessage',{
-      From:'User',
-      Url:`https://www.google.com/maps?q=${position.latitude},${position.longitude}`,
-      createdAt:moment().valueOf()
-    });
+    var user=users.getUser(socket.id);
+    if(user)
+    {
+      io.to(user.room).emit('newLocationMessage',{
+        From:user.name,
+        Url:`https://www.google.com/maps?q=${position.latitude},${position.longitude}`,
+        createdAt:moment().valueOf()
+      });
+    }
   });
 
   socket.on('disconnect',()=>{
