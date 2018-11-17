@@ -16,14 +16,16 @@ var io=socketIO(server);//io is a server instance
 io.on('connection',(socket)=>{//socket is an object for each indivisual user
   console.log('New user connected');
 
-  // socket.emit('newEmailFromServer',{From:'Server',To:'Client'});
-  //
-  // socket.on('newEmailFromClient',(data)=>{
-  //   console.log('Client sent a new email',data);
-  // });
-  socket.emit('newMessage',{From:'Admin',Text:'Welcome to the chat app!'});
-
-  socket.broadcast.emit('newMessage',{From:'Admin',Text:'New user joined!'});
+  socket.on('join',(params,callback)=>{
+    if(!(typeof(params.name)==='string'&&params.name.trim().length>0)||!(typeof(params.room)==='string'&&params.room.trim().length>0)){
+      callback('Name and room name need to be specified as non empty string');
+    }
+    socket.join(params.room);//join by rooms
+    socket.emit('newMessage',{From:'Admin',Text:'Welcome to the chat app!'});
+    console.log('Reached here');
+    socket.broadcast.to(params.room).emit('newMessage',{From:'Admin',Text:`${params.name} joined the room.`});
+    callback();
+  });
 
   socket.on('createMessage',(message,callback)=>{
     console.log('User created new message',message);
