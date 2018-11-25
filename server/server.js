@@ -6,6 +6,8 @@ var moment=require('moment');
 var port=process.env.PORT||3000;
 var {Users}=require('../public/js/users.js');
 var app=express();
+var dl=require('delivery');
+var fs=require('fs');
 var users=new Users();
 //we store all the users belonging to any room inside the same object.
 var server=http.createServer(app);
@@ -52,6 +54,23 @@ io.on('connection',(socket)=>{//socket is an object for each indivisual user
       });
     }
   });
+
+  var delivery = dl.listen(socket);
+    delivery.on('receive.success',function(file){
+      var params = file.params;
+      fs.writeFile(`images/${file.name}`,file.buffer, function(err){
+        if(err){
+          console.log('File could not be saved.');
+        }else{
+          var user=users.getUser(socket.id);
+          fs.readFile(__dirname +`/images/${file.name}`, function(err, buf){
+
+          io.to(user.room).emit('image',{image: true, buffer: buf.toString('base64'),From:user.name,createdAt:moment().valueOf()});
+          console.log('image file is initialized');
+        });
+        }
+      });
+    });
 
   socket.on('disconnect',()=>{
     var user=users.removeUser(socket.id);

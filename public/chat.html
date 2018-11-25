@@ -25,6 +25,8 @@
         </form>
         <br>
         <button id="location-button">Send current location</button>
+        <input type="file" name="image" id="image" size="5" />
+        <button id="image-button" disabled>Send Image</button>
       </div>
 
       <script id="message-template" type="text/template"><!--template for normal messages-->
@@ -54,6 +56,20 @@
           </div>
         </li>
       </script>
+      <script id="image-message-template" type="text/template"><!--template for location messages-->
+        <li id="message">
+          <div class="message__title">
+            <h4>{{From}}</h4>
+            <span>{{createdAt}}</span>
+          </div>
+
+          <div class="message__body">
+            <p>
+            <img src="{{source}}" width="300px" height="300px"/>
+            </p>
+          </div>
+        </li>
+      </script>
    </div>
    <script src="/socket.io/socket.io.js"></script>
    <script src="/js/jquery.min.js"></script>
@@ -61,5 +77,6 @@
    <script src="/js/mustache.js"></script>
    <script src="/js/deparam.js"></script>
    <script src="/js/script.js"></script>
+   <script type="text/javascript" src="/js/delivery.js"></script>
   </body>
 </html>

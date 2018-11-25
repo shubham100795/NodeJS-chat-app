@@ -17,6 +17,16 @@ h3 {
   text-align: center;
   font-size: 1.5rem;
 }
+#image-button{
+  margin-left: 10px;
+}
+#image{
+  margin-left:10px;
+  width:5px;
+  background: #265f82;
+  padding-right: 0px;
+  color:white;
+}
 
 button {
   border: none;
@@ -193,4 +203,3 @@ button:disabled {
   .chat__footer button {
     margin-right: 0px;
   }
-}

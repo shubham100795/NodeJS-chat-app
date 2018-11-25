@@ -94,6 +94,46 @@ function scrollToBottom(){//we scroll for new messages if the user is near botto
     messages.scrollTop(scrollHeight);
   }
 }
+jQuery('input:file').change(
+            function(){
+                if ($(this).val()) {
+                    $('#image-button').attr('disabled',false);
+                }
+            });
+
+var delivery = new Delivery(socket);
+
+    delivery.on('delivery.connect',function(delivery){
+      jQuery("#image-button").click(function(evt){
+        console.log('image button clickedd');
+        var file = jQuery("input[type=file]")[0].files[0];
+        var extraParams = {foo: 'bar'};
+        delivery.send(file, extraParams);
+        jQuery("input[type=file]").val('');
+        $('#image-button').attr('disabled',true);
+        evt.preventDefault();
+      });
+    });
+
+    delivery.on('send.success',function(fileUID){
+      console.log("file was successfully sent.");
+    });
+
+    socket.on("image", function(info) {
+          if(info.image)
+          {
+          var img = new Image();
+          var formattedTime=moment(info.createdAt).format('h:mm a');
+          img.src = 'data:image/jpeg;base64,' + info.buffer;
+          var template=jQuery('#image-message-template').html();
+          var html=Mustache.render(template,{
+            source:img.src,
+            From:info.From,
+            createdAt:formattedTime
+          });
+          jQuery('#messages').append(html);
+        }
+        });
 });//closing jquery ready
 
 
