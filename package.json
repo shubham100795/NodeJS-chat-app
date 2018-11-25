@@ -13,6 +13,7 @@
   "author": "shubham arora",
   "license": "ISC",
   "dependencies": {
+    "delivery": "0.0.6",
     "express": "^4.16.4",
     "moment": "^2.22.2",
     "socket.io": "^2.1.1"
